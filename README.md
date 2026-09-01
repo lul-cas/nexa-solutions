@@ -60,7 +60,15 @@ python manage.py test
 
 Os testes cobrem criação válida, cadastro sem título, filtro por status e indicadores.
 
-O GitHub Actions executa os mesmos testes em todo push e pull request para `main`.
+O GitHub Actions executa os testes, o lint e a verificação de formatação em todo push e pull request para `main`.
+
+Localmente:
+
+```powershell
+pip install ruff
+ruff check backend
+ruff format backend
+```
 
 ## Endpoints
 

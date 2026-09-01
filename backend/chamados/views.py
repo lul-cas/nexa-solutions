@@ -19,9 +19,7 @@ class ChamadoListCreateView(generics.ListCreateAPIView):
             return queryset
         if status_param not in STATUS_VALIDOS:
             raise ValidationError(
-                {
-                    "status": "Status inválido. Use ABERTO, EM_ANDAMENTO ou CONCLUIDO."
-                }
+                {"status": "Status inválido. Use ABERTO, EM_ANDAMENTO ou CONCLUIDO."}
             )
         return queryset.filter(status=status_param)
 
@@ -41,8 +39,6 @@ class IndicadoresView(APIView):
                 "em_andamento": queryset.filter(
                     status=Chamado.Status.EM_ANDAMENTO
                 ).count(),
-                "concluidos": queryset.filter(
-                    status=Chamado.Status.CONCLUIDO
-                ).count(),
+                "concluidos": queryset.filter(status=Chamado.Status.CONCLUIDO).count(),
             }
         )

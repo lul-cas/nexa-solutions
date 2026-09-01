@@ -44,12 +44,8 @@ class ChamadoFiltroTests(APITestCase):
 
     def setUp(self):
         Chamado.objects.create(titulo="Aberto 1", status=Chamado.Status.ABERTO)
-        Chamado.objects.create(
-            titulo="Andamento 1", status=Chamado.Status.EM_ANDAMENTO
-        )
-        Chamado.objects.create(
-            titulo="Concluido 1", status=Chamado.Status.CONCLUIDO
-        )
+        Chamado.objects.create(titulo="Andamento 1", status=Chamado.Status.EM_ANDAMENTO)
+        Chamado.objects.create(titulo="Concluido 1", status=Chamado.Status.CONCLUIDO)
 
     def test_filtro_por_status(self):
         response = self.client.get(self.url, {"status": "ABERTO"})

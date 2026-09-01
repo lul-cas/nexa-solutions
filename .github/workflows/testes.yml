@@ -1,4 +1,4 @@
-name: testes
+name: ci
 
 on:
   push:
@@ -7,6 +7,17 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: check backend
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: format --check backend
+
   test:
     runs-on: ubuntu-latest
     defaults:
