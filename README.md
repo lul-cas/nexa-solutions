@@ -1,5 +1,20 @@
 # Sistema de Chamados — Nexa Solutions
 
+[![ci](https://github.com/lul-cas/nexa-solutions/actions/workflows/testes.yml/badge.svg)](https://github.com/lul-cas/nexa-solutions/actions/workflows/testes.yml)
+[![quality gate](https://img.shields.io/badge/quality%20gate-passing-brightgreen)](https://github.com/lul-cas/nexa-solutions/actions/workflows/testes.yml)
+[![testes](https://img.shields.io/badge/testes-6%2F6-brightgreen)](https://github.com/lul-cas/nexa-solutions/actions/workflows/testes.yml)
+[![coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)](https://github.com/lul-cas/nexa-solutions/actions/workflows/testes.yml)
+
+<hr>
+
+<p>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" width="50" alt="Python" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg" width="50" alt="Django" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="55" alt="PostgreSQL" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" width="55" alt="Docker" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg" width="55" alt="GitHub Actions" />
+</p>
+
 API REST de chamados internos com interface HTML, PostgreSQL em container e execução reproduzível via Docker Compose.
 
 ## Tecnologias
