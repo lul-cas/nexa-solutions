@@ -17,11 +17,21 @@
       color: #1d4ed8;
     }
 
-    form, article {
+    form, article, .indicadores {
       border: 1px solid #d1d5db;
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 20px;
+    }
+
+    .indicadores {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .indicadores p {
+      margin: 0;
     }
 
     label, input, textarea, select, button {
@@ -48,6 +58,16 @@
       cursor: pointer;
     }
 
+    .acoes {
+      display: flex;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .acoes label {
+      margin-bottom: 0;
+    }
+
     .erro {
       color: #b91c1c;
       font-weight: bold;
@@ -61,7 +81,14 @@
 </head>
 <body>
   <h1>Sistema de Chamados</h1>
-  <p>Interface inicial da Nexa Solutions.</p>
+  <p>Nexa Solutions — abertura e acompanhamento de chamados internos.</p>
+
+  <section>
+    <h2>Indicadores</h2>
+    <div id="indicadores" class="indicadores">
+      <p>Carregando...</p>
+    </div>
+  </section>
 
   <section>
     <h2>Abrir chamado</h2>
@@ -88,20 +115,66 @@
 
   <section>
     <h2>Chamados cadastrados</h2>
-    <button id="atualizar">Atualizar lista</button>
+    <div class="acoes">
+      <label for="filtro-status">
+        Filtrar por status
+        <select id="filtro-status">
+          <option value="">Todos</option>
+          <option value="ABERTO">Aberto</option>
+          <option value="EM_ANDAMENTO">Em andamento</option>
+          <option value="CONCLUIDO">Concluído</option>
+        </select>
+      </label>
+      <button id="atualizar" type="button">Atualizar lista</button>
+    </div>
     <div id="lista-chamados"></div>
   </section>
 
   <script>
-    const API_URL = "http://localhost:8000/api/chamados/";
+    const API_CHAMADOS = "/api/chamados/";
+    const API_INDICADORES = "/api/indicadores/";
+
+    function mensagemDeErro(corpo) {
+      if (corpo && corpo.titulo) {
+        return Array.isArray(corpo.titulo) ? corpo.titulo.join(" ") : String(corpo.titulo);
+      }
+      if (corpo && corpo.status) {
+        return Array.isArray(corpo.status) ? corpo.status.join(" ") : String(corpo.status);
+      }
+      return "Erro ao cadastrar chamado.";
+    }
+
+    async function carregarIndicadores() {
+      const painel = document.getElementById("indicadores");
+      try {
+        const resposta = await fetch(API_INDICADORES);
+        const dados = await resposta.json();
+        painel.innerHTML = `
+          <p><strong>Total:</strong> ${dados.total}</p>
+          <p><strong>Abertos:</strong> ${dados.abertos}</p>
+          <p><strong>Em andamento:</strong> ${dados.em_andamento}</p>
+          <p><strong>Concluídos:</strong> ${dados.concluidos}</p>
+        `;
+      } catch (erro) {
+        painel.innerHTML = "<p class='erro'>Não foi possível carregar os indicadores.</p>";
+      }
+    }
 
     async function listarChamados() {
       const lista = document.getElementById("lista-chamados");
+      const filtro = document.getElementById("filtro-status").value;
       lista.innerHTML = "<p>Carregando...</p>";
 
+      const url = filtro ? `${API_CHAMADOS}?status=${encodeURIComponent(filtro)}` : API_CHAMADOS;
+
       try {
-        const resposta = await fetch(API_URL);
+        const resposta = await fetch(url);
         const chamados = await resposta.json();
+
+        if (!resposta.ok) {
+          lista.innerHTML = `<p class='erro'>${mensagemDeErro(chamados)}</p>`;
+          return;
+        }
 
         if (chamados.length === 0) {
           lista.innerHTML = "<p>Nenhum chamado cadastrado.</p>";
@@ -110,7 +183,7 @@
 
         lista.innerHTML = chamados.map((chamado) => `
           <article>
-            <strong>#${chamado.id} — ${chamado.titulo || "Sem título"}</strong>
+            <strong>#${chamado.id} — ${chamado.titulo}</strong>
             <p>${chamado.descricao || "Sem descrição"}</p>
             <p>Status: ${chamado.status}</p>
           </article>
@@ -131,17 +204,18 @@
       };
 
       try {
-        const resposta = await fetch(API_URL, {
+        const resposta = await fetch(API_CHAMADOS, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(dados)
         });
+        const corpo = await resposta.json().catch(() => ({}));
 
         if (!resposta.ok) {
           mensagem.className = "erro";
-          mensagem.textContent = "Erro ao cadastrar chamado.";
+          mensagem.textContent = mensagemDeErro(corpo);
           return;
         }
 
@@ -149,15 +223,22 @@
         mensagem.textContent = "Chamado cadastrado com sucesso.";
         document.getElementById("form-chamado").reset();
         listarChamados();
+        carregarIndicadores();
       } catch (erro) {
         mensagem.className = "erro";
         mensagem.textContent = "A API não está disponível.";
       }
     });
 
-    document.getElementById("atualizar").addEventListener("click", listarChamados);
+    document.getElementById("atualizar").addEventListener("click", () => {
+      listarChamados();
+      carregarIndicadores();
+    });
+
+    document.getElementById("filtro-status").addEventListener("change", listarChamados);
 
     listarChamados();
+    carregarIndicadores();
   </script>
 </body>
 </html>
