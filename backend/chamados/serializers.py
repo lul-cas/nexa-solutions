@@ -6,7 +6,6 @@ from .models import Chamado
 class ChamadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chamado
-
         fields = [
             "id",
             "titulo",
@@ -15,18 +14,23 @@ class ChamadoSerializer(serializers.ModelSerializer):
             "criado_em",
             "atualizado_em",
         ]
-
-        # Falha intencional:
-        # A API aceita criação de chamados sem título.
         extra_kwargs = {
             "titulo": {
-                "required": False,
-                "allow_blank": True,
+                "required": True,
+                "allow_blank": False,
+                "error_messages": {
+                    "blank": "O título é obrigatório.",
+                    "required": "O título é obrigatório.",
+                },
             },
         }
-
         read_only_fields = [
             "id",
             "criado_em",
             "atualizado_em",
         ]
+
+    def validate_titulo(self, value):
+        if not value or not str(value).strip():
+            raise serializers.ValidationError("O título é obrigatório.")
+        return str(value).strip()

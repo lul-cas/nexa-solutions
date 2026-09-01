@@ -7,19 +7,15 @@ class Chamado(models.Model):
         EM_ANDAMENTO = "EM_ANDAMENTO", "Em andamento"
         CONCLUIDO = "CONCLUIDO", "Concluído"
 
-
-    titulo = models.CharField(max_length=150, blank=True)
-
+    titulo = models.CharField(max_length=150)
     descricao = models.TextField(blank=True)
-
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
         default=Status.ABERTO,
     )
-
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.titulo or "Chamado sem título"
+        return self.titulo
