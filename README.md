@@ -8,6 +8,7 @@ API REST de chamados internos com interface HTML, PostgreSQL em container e exec
 - Django e Django REST Framework
 - PostgreSQL 16
 - Docker e Docker Compose
+- GitHub Actions
 
 ## Estrutura
 
@@ -58,6 +59,8 @@ python manage.py test
 ```
 
 Os testes cobrem criação válida, cadastro sem título, filtro por status e indicadores.
+
+O GitHub Actions executa os mesmos testes em todo push e pull request para `main`.
 
 ## Endpoints
 
